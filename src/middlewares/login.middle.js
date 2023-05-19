@@ -4,13 +4,22 @@ const prisma = new PrismaClient();
 
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
+  console.log(email, password);
   try {
     const user = await prisma.user.findFirst({
       where: {
         email: email,
       },
     });
-    req.body = { email, password, iduser: user.iduser };
+    console.log(user);
+    req.body = {
+      email,
+      password,
+      iduser: user.iduser,
+      name: user.name,
+      lastname: user.lastname,
+      role: user.role,
+    };
     const isValidUser = bcrypt.compareSync(password, user.password);
     if (isValidUser) {
       next();

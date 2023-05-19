@@ -1,4 +1,5 @@
 export const passwordSecurity = (req, res, next) => {
+  console.log("ok");
   const { password } = req.body;
   const pattern =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
