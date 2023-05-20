@@ -7,13 +7,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model buy_order {
+  idorder     Int     @default(autoincrement())
+  adress      String  @db.VarChar(255)
+  state       String? @db.VarChar(255)
+  user_iduser Int
+  car_idcar   Int
+  car         car     @relation(fields: [car_idcar], references: [idcar], onDelete: NoAction, onUpdate: NoAction, map: "fk_buy_order_car1")
+  user        user    @relation(fields: [user_iduser], references: [iduser], onDelete: NoAction, onUpdate: NoAction, map: "fk_buy_order_user1")
+
+  @@id([idorder, user_iduser, car_idcar])
+  @@index([car_idcar], map: "fk_buy_order_car1_idx")
+  @@index([user_iduser], map: "fk_buy_order_user1_idx")
+}
+
 model car {
   idcar        Int            @id @default(autoincrement())
   model        String         @db.VarChar(255)
   color        String         @db.VarChar(255)
   price        Int
   quantity     Int?
-  user_has_car user_has_car[]
+  buy_order    buy_order[]
 }
 
 model user {
@@ -23,16 +37,6 @@ model user {
   name         String         @db.VarChar(255)
   lastname     String         @db.VarChar(255)
   role         String?        @db.VarChar(45)
-  user_has_car user_has_car[]
+  buy_order    buy_order[]
 }
 
-model user_has_car {
-  user_iduser Int
-  car_idcar   Int
-  car         car  @relation(fields: [car_idcar], references: [idcar], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_has_car_car1")
-  user        user @relation(fields: [user_iduser], references: [iduser], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_has_car_user")
-
-  @@id([user_iduser, car_idcar])
-  @@index([car_idcar], map: "fk_user_has_car_car1_idx")
-  @@index([user_iduser], map: "fk_user_has_car_user_idx")
-}

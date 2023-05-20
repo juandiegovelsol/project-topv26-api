@@ -1,5 +1,7 @@
 import express from "express";
 import userRoutes from "./routes/user.routes.js";
+import carRoutes from "./routes/car.routes.js";
+import orderRoutes from "./routes/order.routes.js";
 import cors from "cors";
 
 const PORT = process.env.PORT;
@@ -11,6 +13,8 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "Hello project back-end API" });
 });
 app.use("/auth/local", userRoutes);
+app.use("/car", carRoutes);
+app.use("/order", orderRoutes);
 
 app.listen(PORT, () => {
   console.log(`Initialized asessment server on port ${PORT}...`);

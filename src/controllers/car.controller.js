@@ -1,0 +1,14 @@
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
+
+export const createCar = async (req, res) => {
+  const { model, color, price, quantity } = req.body;
+  try {
+    const newCar = await prisma.car.create({
+      data: { model, color, price, quantity },
+    });
+    res.status(201).json(newCar);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+};
