@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import { response } from "express";
 const prisma = new PrismaClient();
 
 export const createOrder = async (req, res) => {
@@ -35,26 +34,41 @@ export const createOrder = async (req, res) => {
 };
 
 export const getAllOrders = async (req, res) => {
+  const { id } = req.params;
   try {
-    const orders = await prisma.buy_order.findMany({
-      include: {
-        user: {
-          select: {
-            email: true,
-            name: true,
-            lastname: true,
-          },
-        },
-        car: {
-          select: {
-            model: true,
-            color: true,
-            price: true,
-          },
-        },
+    const allowedUser = await prisma.user.findFirst({
+      where: {
+        iduser: +id,
       },
     });
-    res.status(200).json(orders);
+    if (allowedUser.role === "admin") {
+      try {
+        const orders = await prisma.buy_order.findMany({
+          include: {
+            user: {
+              select: {
+                email: true,
+                name: true,
+                lastname: true,
+              },
+            },
+            car: {
+              select: {
+                model: true,
+                color: true,
+                price: true,
+              },
+            },
+          },
+        });
+        res.status(200).json(orders);
+      } catch (error) {
+        res.status(500).json({ error: error });
+      }
+    } else {
+      res.status(401).json({ message: "Unauthorized" });
+    }
+    console.log(allowedUser);
   } catch (error) {
     res.status(500).json({ error: error });
   }
