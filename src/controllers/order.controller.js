@@ -30,7 +30,6 @@ export const createOrder = async (req, res) => {
       res.status(500).json({ message: "model not available" });
     }
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: error });
   }
 };
@@ -56,5 +55,37 @@ export const getAllOrders = async (req, res) => {
       },
     });
     res.status(200).json(orders);
-  } catch (error) {}
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+};
+
+export const getUserOrders = async (req, res) => {
+  const { id: user_iduser } = req.params;
+  try {
+    const user_orders = await prisma.buy_order.findMany({
+      where: {
+        user_iduser: +user_iduser,
+      },
+      include: {
+        user: {
+          select: {
+            email: true,
+            name: true,
+            lastname: true,
+          },
+        },
+        car: {
+          select: {
+            model: true,
+            color: true,
+            price: true,
+          },
+        },
+      },
+    });
+    res.status(200).json(user_orders);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
 };
