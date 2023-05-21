@@ -48,6 +48,12 @@ export const getOneCar = async (req, res) => {
         model: model,
         color: color,
       },
+      select: {
+        idcar: true,
+        model: true,
+        color: true,
+        price: true,
+      },
     });
     res.status(200).json(car);
   } catch (error) {
