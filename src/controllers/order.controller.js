@@ -34,14 +34,7 @@ export const createOrder = async (req, res) => {
 };
 
 export const getAllOrders = async (req, res) => {
-  /* const { id } = req.params; */
   try {
-    /* const allowedUser = await prisma.user.findFirst({
-      where: {
-        iduser: +id,
-      },
-    }); */
-    /* if (allowedUser.role === "admin") { */
     try {
       const orders = await prisma.buy_order.findMany({
         include: {
@@ -65,10 +58,6 @@ export const getAllOrders = async (req, res) => {
     } catch (error) {
       res.status(500).json({ error: error });
     }
-    /* } else {
-      res.status(401).json({ message: "Unauthorized" });
-    }
-    console.log(allowedUser); */
   } catch (error) {
     res.status(500).json({ error: error });
   }
