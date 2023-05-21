@@ -12,3 +12,12 @@ export const createCar = async (req, res) => {
     res.status(500).json({ error: error });
   }
 };
+
+export const getAllCars = async (req, res) => {
+  try {
+    const allCars = await prisma.car.findMany({});
+    res.status(200).json(allCars);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+};
