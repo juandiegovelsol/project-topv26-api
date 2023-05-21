@@ -92,3 +92,35 @@ export const getUserOrders = async (req, res) => {
     res.status(500).json({ error: error });
   }
 };
+
+export const adminUpdateOrder = async (req, res) => {
+  const { id2 } = req.params;
+  try {
+    const { state } = req.body;
+    const updatedOrder = await prisma.buy_order.update({
+      where: {
+        idorder: +id2,
+      },
+      include: {
+        user: {
+          select: {
+            email: true,
+            name: true,
+            lastname: true,
+          },
+        },
+        car: {
+          select: {
+            model: true,
+            color: true,
+            price: true,
+          },
+        },
+      },
+      data: { state: state },
+    });
+    res.status(200).json(updatedOrder);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};

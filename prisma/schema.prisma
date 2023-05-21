@@ -8,7 +8,7 @@ datasource db {
 }
 
 model buy_order {
-  idorder     Int     @default(autoincrement())
+  idorder     Int     @unique @default(autoincrement())
   adress      String  @db.VarChar(255)
   state       String? @db.VarChar(255)
   user_iduser Int
@@ -22,21 +22,20 @@ model buy_order {
 }
 
 model car {
-  idcar        Int            @id @default(autoincrement())
-  model        String         @db.VarChar(255)
-  color        String         @db.VarChar(255)
-  price        Int
-  quantity     Int?
-  buy_order    buy_order[]
+  idcar     Int         @id @default(autoincrement())
+  model     String      @db.VarChar(255)
+  color     String      @db.VarChar(255)
+  price     Int
+  quantity  Int?
+  buy_order buy_order[]
 }
 
 model user {
-  iduser       Int            @id @default(autoincrement())
-  email        String         @unique(map: "email_UNIQUE") @db.VarChar(255)
-  password     String         @db.VarChar(255)
-  name         String         @db.VarChar(255)
-  lastname     String         @db.VarChar(255)
-  role         String?        @db.VarChar(45)
-  buy_order    buy_order[]
+  iduser    Int         @id @default(autoincrement())
+  email     String      @unique(map: "email_UNIQUE") @db.VarChar(255)
+  password  String      @db.VarChar(255)
+  name      String      @db.VarChar(255)
+  lastname  String      @db.VarChar(255)
+  role      String?     @db.VarChar(45)
+  buy_order buy_order[]
 }
-
