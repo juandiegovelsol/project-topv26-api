@@ -16,11 +16,94 @@ export const generateToken = (req, res) => {
 };
 
 export const register = async (req, res) => {
-  const { email, password, name, lastname, role } = req.body;
-  const hash = bcrypt.hashSync(password, 12);
-  const user = await prisma.user.create({
-    data: { email, password: hash, name, lastname, role },
-  });
-  const { email: email1, name: name1, lastname: lastname1, role: role1 } = user;
-  res.status(201).json({ email1, name1, lastname1, role1 });
+  try {
+    const { email, password, name, lastname, role } = req.body;
+    const hash = bcrypt.hashSync(password, 12);
+    const user = await prisma.user.create({
+      data: { email, password: hash, name, lastname, role },
+    });
+    const {
+      email: email1,
+      name: name1,
+      lastname: lastname1,
+      role: role1,
+    } = user;
+    res.status(201).json({ email1, name1, lastname1, role1 });
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+};
+
+export const updateUser = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const { email, password, name, lastname } = req.body;
+    const hash = bcrypt.hashSync(password, 12);
+    const updatedUser = await prisma.user.update({
+      where: {
+        iduser: +id,
+      },
+      data: { email: email, password: hash, name: name, lastname: lastname },
+    });
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error });
+  }
+};
+
+export const changeRole = async (req, res) => {
+  const { id2 } = req.params;
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        iduser: +id2,
+      },
+    });
+
+    if (user.role === "costumer") {
+      try {
+        const updatedUser = await prisma.user.update({
+          where: {
+            iduser: +id2,
+          },
+          data: { role: "admin" },
+        });
+        res.status(200).json(updatedUser);
+      } catch (error) {
+        res.status(500).json({ error: error });
+      }
+    } else {
+      try {
+        const updatedUser = await prisma.user.update({
+          where: {
+            iduser: +id2,
+          },
+          data: { role: "costumer" },
+        });
+        res.status(200).json(updatedUser);
+      } catch (error) {
+        res.status(500).json({ error: error });
+      }
+    }
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+};
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const allUsers = await prisma.user.findMany({
+      select: {
+        iduser: true,
+        email: true,
+        name: true,
+        lastname: true,
+        role: true,
+      },
+    });
+    res.status(200).json(allUsers);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
 };
