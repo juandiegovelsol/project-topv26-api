@@ -107,3 +107,17 @@ export const getAllUsers = async (req, res) => {
     res.status(500).json({ error: error });
   }
 };
+
+export const getUser = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        iduser: +id,
+      },
+    });
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+};
