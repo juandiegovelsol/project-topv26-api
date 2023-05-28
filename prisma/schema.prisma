@@ -37,5 +37,6 @@ model user {
   name      String      @db.VarChar(255)
   lastname  String      @db.VarChar(255)
   role      String?     @db.VarChar(45)
+  image     String?     @db.VarChar(255)
   buy_order buy_order[]
 }

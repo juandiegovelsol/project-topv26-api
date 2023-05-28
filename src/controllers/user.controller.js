@@ -5,8 +5,8 @@ const prisma = new PrismaClient();
 
 export const generateToken = (req, res) => {
   try {
-    const { email, iduser, name, lastname, role } = req.body;
-    const payload = { iduser, email, name, lastname, role };
+    const { email, iduser, name, lastname, role, image } = req.body;
+    const payload = { iduser, email, name, lastname, role, image };
     const token = jwt.sign(payload, process.env.SECRET, { expiresIn: "1d" });
     res.status(200).json({ ...payload, token });
   } catch (error) {
@@ -19,16 +19,19 @@ export const register = async (req, res) => {
   try {
     const { email, password, name, lastname, role } = req.body;
     const hash = bcrypt.hashSync(password, 12);
+    const image =
+      "https://res.cloudinary.com/dprkaqz8q/image/upload/v1685221026/tesla-logo-01_geitm6.jpg";
     const user = await prisma.user.create({
-      data: { email, password: hash, name, lastname, role },
+      data: { email, password: hash, name, lastname, role, image },
     });
     const {
       email: email1,
       name: name1,
       lastname: lastname1,
       role: role1,
+      image: image1,
     } = user;
-    res.status(201).json({ email1, name1, lastname1, role1 });
+    res.status(201).json({ email1, name1, lastname1, role1, image1 });
   } catch (error) {
     res.status(500).json({ error: error });
   }
@@ -37,13 +40,19 @@ export const register = async (req, res) => {
 export const updateUser = async (req, res) => {
   const { id } = req.params;
   try {
-    const { email, password, name, lastname } = req.body;
+    const { email, password, name, lastname, image } = req.body;
     const hash = bcrypt.hashSync(password, 12);
     const updatedUser = await prisma.user.update({
       where: {
         iduser: +id,
       },
-      data: { email: email, password: hash, name: name, lastname: lastname },
+      data: {
+        email: email,
+        password: hash,
+        name: name,
+        lastname: lastname,
+        image: image,
+      },
     });
     res.status(200).json(updatedUser);
   } catch (error) {
@@ -100,6 +109,7 @@ export const getAllUsers = async (req, res) => {
         name: true,
         lastname: true,
         role: true,
+        image: true,
       },
     });
     res.status(200).json(allUsers);
