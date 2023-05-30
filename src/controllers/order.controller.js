@@ -23,7 +23,6 @@ export const createOrder = async (req, res) => {
           quantity: +quantity - 1,
         },
       });
-      console.log(modifyCar);
       res.status(201).json(newOrder);
     } else {
       res.status(500).json({ message: "model not available" });
